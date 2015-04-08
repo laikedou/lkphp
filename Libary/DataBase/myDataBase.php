@@ -8,7 +8,16 @@
     public $_dbName="onethink"; //数据库名
     public $_dbUser="root"; //用户名
     public $_dbPwd="root";//密码
-    public $_dbType='mysqli';
+    public $_dbType='mysqli';//默认使用mysqli 还可以支持 mssql oracle 等等
+    //mssql
+    public $_dbUser_Mssql ='root';
+    public $_dbPwd_Mssql = 'root';
+    public $_dbInstance_Mssql ='sa';
+    public $_dbAddr_Mssql ='localhost';
+    //oracle
+    public $_dbUser_Oracle ='root';
+    public $_dbPwd_Oracle = 'root';
+    public $_dbInstance_Oracle ='sa';
    
     public $_db=false; //内部实例化过后的数据库连接对象
     
@@ -41,18 +50,18 @@
           break;
         case 'mssql':
           $this->_db=NewADOConnection("mssqlnative");//php5 之后的增强版驱动
-          $this->_db->connect($this->_dbAddr,$this->_dbUser,$this->_dbPwd,$this->_dbName);
+          $this->_db->connect($this->_dbAddr_Mssql,$this->_dbUser_Mssql,$this->_dbPwd_Mssql,$this->_dbInstance_Mssql);
           break;
         case 'oracle':
           //使用oracle数据库
-          
+          $this->_db=NewADOConnection('oci8');
+          $this->_db->charSet="UTF8";
+          $this->_db->connect(false, $this->_dbUser_Oracle, $this->_dbPwd_Oracle, "(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=".$this->_dbInstance_Oracle.")(SERVER=DEDICATED))");
           break;
         default:
-          //使用
+          //empty code here!
           break;
       }
-        
-		
     }
     
     function execForNothing($sql)// 执行一个sql语句，不返回任何值
@@ -77,14 +86,11 @@
         }
         else
             return  false;
-          
-        
     }
     function execForOne($sql)
     {
       //执行一个sql语句 ，返回 单列字符串
-       
-       $result=$this->_db->GetOne($sql); //adodb的函数，来获取单个值
+      $result=$this->_db->GetOne($sql); //adodb的函数，来获取单个值
       return $result;
     }
     function execForTrac($sqllist,$resulttype) //用事务 来执行
@@ -99,8 +105,6 @@
         $ret=false;
         foreach($sqllist as $sql)
         {
-            
-          
             if($sqlindex==(count($sqllist)-1)) //最后一个语句 需要根据返回类型来做不同的处理
             {
                  if($resulttype=="none")
