@@ -1,8 +1,15 @@
-<IfModule mod_rewrite.c>
-   Options +FollowSymlinks
-   RewriteEngine On
-   RewriteCond %{QUERY_STRING} ^(.*)
-   RewriteRule ^([a-z]{2,10})/$ /index.php?controller=$1&%1
-   RewriteCond %{QUERY_STRING} ^(.*)
-   RewriteRule ^([a-z]{2,10})/([a-z]{1,20})/$ /index.php?controller=$1&action=$2&%1 
-</IfModule>
+ <ifmodule mod_rewrite.c>
+    RewriteEngine On
+    
+ 
+    
+ RewriteCond %{QUERY_STRING} ^(.*)
+    RewriteRule ^([a-z]{2,10})/$ /index.php?controller=$1&%1  
+    
+    RewriteCond %{QUERY_STRING} ^(.*)
+    RewriteRule ^([a-z]{2,10})\/([a-z]{1,20})/$ /index.php?controller=$1&action=$2&%1  
+    
+     
+    
+  
+  </ifmodule>
