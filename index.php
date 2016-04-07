@@ -12,4 +12,5 @@
     include(LKPHP_PATH.'MVC/Controller/'.$controller.'.inc');//加载特定的controller类
     $_init_controller = new $controller();
     $_init_controller->$action();
+    echo 'okkk';
 ?>
