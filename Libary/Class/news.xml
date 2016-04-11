@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<class>
+  <func>
+          <name>getNewsList</name>
+          <sql><![CDATA[ 
+          select * from news 
+          ]]>
+          </sql>
+         <description>获取全部新闻</description>
+          <resultType>int</resultType>
+  </func>
+  
+  <func>
+          <name>getNewsDetail</name>
+          <sql><![CDATA[ 
+          select * from onethink_ucenter_member
+          ]]>
+          </sql>
+         <description>获取某条新闻的详细内容</description>
+          <resultType>array</resultType>
+  </func>
+</class>

@@ -1,6 +1,7 @@
 <?php 
    class index extends _Master{
    	   function showindex(){
+
    	      //测试下数据库操作
           /*
           $db = load_db();
@@ -25,10 +26,10 @@
           $sql[] ="insert into onethink_member(last_login_time,nickname,qq) values(@newuserid,'laikedou','924462390')";
           $sql[] = 'select @newuserid';
           $userid =$db->execForTrac($sql,'int');
-          exit('当前用户ID是：'.$userid);
+          echo('当前用户ID是：'.$userid);
 
-   	   	 
-
+   	   	  
+          /*
      	   	$this->setView('index');
      	   	//设置一些个变量 
      	   	$this->setVar('title','测试一下大家的灵活性！');
@@ -44,7 +45,13 @@
           }else{
               $this->setVar('userState','当前用户未登录');
           }
+          */
+         
 
+         //测试下加载的虚拟类
+         $news=load_class('news');
+         $info=$news->getNewsDetail();
+        // var_export($info);
    	   }
    }
  ?>
