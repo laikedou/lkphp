@@ -11,14 +11,17 @@
           foreach ($newslist as $value) {
           	 echo '标题：'.$value['title'].' 标注：'.$value['remark'].'<br/>';
           }*/
-   	   	  include(LKPHP_PATH.'/MVC/View/'.LKPHP_VIEWPATH.'/index.php');
+   	   	  
+         
+          define('LKPHP_SITE_PATH', LKPHP_PATH.'/MVC/View/'.LKPHP_VIEWPATH);
+          
 
    	   	  //最新使用Model
    	   	  // $user = load_model('UserModel');
    	   	  // $user->_view_name = 'onethink_ucenter_member';
    	   	  // $user->_id = 1;
    	   	  // $user->load();
-          
+          /*
           $db = load_db();
           
           $sql[] = "insert into onethink_ucenter_member(username,password,email) values('laikedoud','0931e5bac9c74449eb14fcdbe4223d3c','laike13545@qq.com')";
@@ -29,7 +32,7 @@
           echo('当前用户ID是：'.$userid);
 
    	   	  
-          /*
+          
      	   	$this->setView('index');
      	   	//设置一些个变量 
      	   	$this->setVar('title','测试一下大家的灵活性！');
@@ -38,20 +41,20 @@
           $md->user_name='laike';
           $md->user_email='lake1355@qq.com';
           $md->user_pass='test';
+          $str = myCrypt(json_encode($md),LKPHP_DESKEY);
+          echo $str;
           set_user($md,3600);
-
           if(is_login()){
              $this->setVar('userState','当前用户是：'.the_user()->user_name);
           }else{
               $this->setVar('userState','当前用户未登录');
-          }
-          */
-         
-
+          }*/
          //测试下加载的虚拟类
-         $news=load_class('news');
-         $info=$news->getNewsDetail();
-        // var_export($info);
+         //$news=load_class('news');
+         //$info=$news->getNewsDetail();
+         //$ret =$this->news->getNewsDetail();
+         //var_export($ret);
+        // echo myCrypt('赖科','123456789'); 
    	   }
    }
  ?>

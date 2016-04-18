@@ -87,14 +87,17 @@ function the_get($get_key,$ispost=false)
  function the_user()
  {
 	//可以使用cookie 也可以使用session
- 	return isset($_COOKIE[LKPHP_USERCOOKIE])?json_decode($_COOKIE[LKPHP_USERCOOKIE]) :false;
+  $md = json_decode(myDecrypt($_COOKIE[LKPHP_USERCOOKIE],LKPHP_DESKEY));
+ 	return isset($_COOKIE[LKPHP_USERCOOKIE])?$md :false;
  }
  
  //根据cacheKey或来获得缓存内容
 function the_cache($cacheKey)
 {
 	//这里我们使用memcached
-	return false;
+  $m = new Memcache();
+  $m->connect(LKPHP_MEMCACHE_IP,LKPHP_MEMCACHE_PORT);
+	return $m->get($cacheKey);
 }
 ?>
 <?php
@@ -120,9 +123,11 @@ function the_cache($cacheKey)
   //set_XX系列，譬如更新缓存或者更新一个model
   
   //更新缓存
-  function set_cache($cacheKey)
+  function set_cache($cacheKey,$value,$expire)
   {
-  	
+  	  $m = new Memcache();
+      $m->connect(LKPHP_MEMCACHE_IP,LKPHP_MEMCACHE_PORT);
+      return $m->set($cacheKey,$value,0,$expire);
   }
   //更新一个model
   function set_model($model)
@@ -136,7 +141,41 @@ function the_cache($cacheKey)
   		setcookie(LKPHP_USERCOOKIE,'',time()-3600,'/');
   	}else{
   		//代表登录成功
-             setcookie(LKPHP_USERCOOKIE,json_encode($md),time()+$time,'/');//对对象进行json编码
+             $md = myCrypt(json_encode($md),LKPHP_DESKEY);
+             setcookie(LKPHP_USERCOOKIE,$md,time()+$time,'/');//对对象进行json编码
   	}
   }
+
+   function pkcs5_pad ($text, $blocksize) {  //加密时的字节填充，保持和java 一致
+        $pad = $blocksize - (strlen($text) % $blocksize);  
+        return $text . str_repeat(chr($pad), $pad);  
+   } 
+   function myCrypt($input,$key) //加密
+   {
+        $size = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB);  
+          $input =pkcs5_pad($input, $size);  
+          $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');  
+          $iv = mcrypt_create_iv (mcrypt_enc_get_iv_size($td), MCRYPT_RAND);  
+          mcrypt_generic_init($td, $key, $iv);  
+          $data = mcrypt_generic($td, $input);  
+          mcrypt_generic_deinit($td);  
+          mcrypt_module_close($td);  
+          $data = base64_encode($data);  
+          return $data; 
+   }
+   function myDecrypt($str,$key) //解密
+   {
+     $decrypted= mcrypt_decrypt(  
+          MCRYPT_RIJNDAEL_128,  
+          $key,  
+          base64_decode($str),  
+          MCRYPT_MODE_ECB  
+      );  
+     
+          $dec_s = strlen($decrypted);  
+          $padding = ord($decrypted[$dec_s-1]);  
+          $decrypted = substr($decrypted, 0, -$padding);  
+          return $decrypted; 
+   }
+
 ?>
